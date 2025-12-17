@@ -4,7 +4,7 @@ import StarRating from '../common/StarRating';
 import { calculateProgress } from '../../utils/progressCalculator';
 import styles from './BookItemComponent.module.css';
 
-function BookItemComponent({ book, onEdit, onDelete }) {
+function BookItemComponent({ book, isSearchMatch, onEdit, onDelete }) {
   const getStatusColor = (status) => {
     switch (status) {
       case 'wishlist':
@@ -28,8 +28,10 @@ function BookItemComponent({ book, onEdit, onDelete }) {
     book.status
   );
   
+  const cardClassName = `${styles.bookCard} ${isSearchMatch === false ? styles.dimmed : ''}`;
+  
   return (
-    <Card className={styles.bookCard}>
+    <Card className={cardClassName}>
       <div className={styles.content}>
         <div className={styles.header}>
           <h3 className={styles.title}>{book.title}</h3>

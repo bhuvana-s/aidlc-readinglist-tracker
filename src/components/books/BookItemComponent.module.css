@@ -169,3 +169,10 @@
   white-space: pre-wrap;
   line-height: 1.4;
 }
+
+/* Search highlighting */
+.dimmed {
+  opacity: 0.4;
+  filter: grayscale(50%);
+  transition: opacity 0.3s, filter 0.3s;
+}

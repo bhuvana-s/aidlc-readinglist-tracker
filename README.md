@@ -4,21 +4,59 @@ A web application to track your reading list with progress, notes, ratings, and 
 
 ## Features
 
-### ✅ Implemented (Unit 1 + Unit 2)
+### ✅ Implemented (Units 1-4)
+
+#### Authentication & User Management
 - **User Authentication**: Register and login with email and password (bcrypt hashing)
 - **Session Management**: Persistent sessions across page reloads
-- **Book Management**: Add, edit, and delete books in your collection
-- **Book Details**: Title, author, status (wishlist/reading/completed), total pages
 - **Data Isolation**: Each user has their own private book collection
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
 
-### 📋 Planned (Unit 3 + Unit 4)
-- **Multiple Entry Methods**: ISBN lookup or import from JSON/CSV
-- **Progress Tracking**: Track reading progress with page numbers and visual indicators
-- **Notes & Ratings**: Add notes and rate books with a 5-star system
-- **Statistics Dashboard**: View books per month, reading pace, and status counts
-- **Search**: Search books by title or author
-- **Data Export**: Export your reading list to JSON
+#### Book Management
+- **Add Books**: Manual entry with title, author, status, and page count
+- **Edit Books**: Update any book details
+- **Delete Books**: Remove books with confirmation
+- **Book Status**: Track as Wishlist, Reading, or Completed
+- **ISBN Validation**: Optional ISBN-10/ISBN-13 validation
+- **Import Books**: Import from JSON files
+
+#### Progress Tracking
+- **Page Progress**: Track current page and calculate completion percentage
+- **Visual Progress**: Progress bars with percentage indicators
+- **Completion Dates**: Automatic date tracking when books are completed
+- **Progress Updates**: Update progress directly from book cards
+
+#### Notes & Ratings
+- **Book Notes**: Add personal notes to any book
+- **Star Ratings**: Rate books with 1-5 stars
+- **Interactive Rating**: Click to rate, visual star display
+
+#### Statistics & Analytics
+- **Books by Status**: Count and percentage breakdown (Reading/Completed/Wishlist)
+- **Monthly Trends**: Books added per month (last 12 months)
+- **Completion Tracking**: Books completed per month
+- **Reading Pace**: Average pages per day based on completed books
+- **Refresh Statistics**: On-demand calculation
+- **Clear Statistics**: Hide statistics panel
+
+#### Search & Filter
+- **Search by Title**: Find books by partial title match
+- **Search by Author**: Find books by partial author match
+- **Case-Insensitive**: Search works regardless of capitalization
+- **Visual Highlighting**: Non-matching books dimmed during search
+- **Clear Search**: Reset to show all books
+
+#### Data Management
+- **Export to JSON**: Download complete book collection
+- **Export Preview**: Preview first 5 books before export
+- **Timestamped Files**: Automatic filename with date/time
+- **Import from JSON**: Restore or migrate book data
+
+#### User Experience
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Modern UI**: Clean, colorful design with visual appeal
+- **Loading States**: Visual feedback during operations
+- **Error Handling**: Graceful error messages and validation
+- **Keyboard Support**: Full keyboard navigation
 
 ## Technology Stack
 
@@ -39,13 +77,17 @@ reading-list-tracker/
 │   │   ├── auth/             # Authentication components (Unit 2)
 │   │   │   ├── AuthComponent.jsx
 │   │   │   └── AuthComponent.module.css
-│   │   ├── books/            # Book management components (Unit 2)
+│   │   ├── books/            # Book management components (Units 2-4)
 │   │   │   ├── BookListComponent.jsx
 │   │   │   ├── BookListComponent.module.css
 │   │   │   ├── BookFormModal.jsx
 │   │   │   ├── BookFormModal.module.css
 │   │   │   ├── BookItemComponent.jsx
-│   │   │   └── BookItemComponent.module.css
+│   │   │   ├── BookItemComponent.module.css
+│   │   │   ├── StatisticsComponent.jsx      # Unit 4
+│   │   │   ├── StatisticsComponent.module.css
+│   │   │   ├── SearchComponent.jsx          # Unit 4
+│   │   │   └── SearchComponent.module.css
 │   │   ├── common/           # Reusable UI components (Unit 1)
 │   │   │   ├── Button.jsx
 │   │   │   ├── Input.jsx
@@ -67,7 +109,11 @@ reading-list-tracker/
 │   │   ├── storage.js        # localStorage wrapper functions
 │   │   ├── validation.js     # Form validation functions
 │   │   ├── idGenerator.js    # UUID generation
-│   │   └── dateUtils.js      # Date formatting utilities
+│   │   ├── dateUtils.js      # Date formatting utilities
+│   │   ├── isbnValidator.js  # ISBN validation (Unit 3)
+│   │   ├── importParser.js   # JSON import parser (Unit 3)
+│   │   ├── progressCalculator.js  # Progress calculations (Unit 3)
+│   │   └── statisticsCalculator.js # Statistics calculations (Unit 4)
 │   ├── styles/
 │   │   └── global.css        # Global styles and design tokens
 │   ├── App.jsx               # Root component with routing
@@ -141,15 +187,53 @@ npm run dev
 
 2. **Add Books**: After registration, you'll be redirected to your book list
    - Click "+ Add Book" to add your first book
-   - Fill in the book details (title, author, status, total pages)
+   - Fill in the book details:
+     - Title and Author (required)
+     - Status: Wishlist, Reading, or Completed
+     - Total Pages (required)
+     - ISBN (optional, validates ISBN-10/ISBN-13)
+     - Current Page (for tracking progress)
+     - Notes (personal notes about the book)
+     - Rating (1-5 stars)
    - Click "Add Book" to save
 
-3. **Manage Books**: 
+3. **Track Progress**: 
+   - Update "Current Page" in the edit form
+   - Progress percentage calculated automatically
+   - Visual progress bar shows completion
+   - Completion date tracked automatically when status changes to "Completed"
+
+4. **View Statistics**:
+   - Click "Refresh Statistics" to calculate your reading stats
+   - View books by status (Reading/Completed/Wishlist)
+   - See monthly trends (books added and completed)
+   - Check your reading pace (pages per day)
+   - Click "Clear Statistics" to hide the panel
+
+5. **Search Books**:
+   - Enter title or author in the search box
+   - Click "Search" or press Enter
+   - Non-matching books are dimmed
+   - Click "Clear" to show all books
+
+6. **Export Data**:
+   - Click "Export Books" button
+   - Preview first 5 books in modal
+   - Click "Confirm Export" to download JSON file
+   - File includes all book data with timestamp
+
+7. **Import Data**:
+   - Click "+ Add Book"
+   - Click "Import from JSON" button
+   - Select a previously exported JSON file
+   - Books are added to your collection
+
+8. **Manage Books**: 
    - **Edit**: Click "Edit" on any book to update its details
    - **Delete**: Click "Delete" on any book to remove it (confirmation required)
-   - **View**: All your books are displayed in a grid layout
+   - **View**: All your books are displayed in a grid layout with progress bars
 
-4. **Logout**: Click "Logout" in the header to end your session
+9. **Logout**: Click "Logout" in the header to end your session
 
 ## Available Scripts
 
@@ -176,16 +260,23 @@ npm run dev
 - Local storage integration
 - 4 new components: AuthComponent, BookListComponent, BookFormModal, BookItemComponent
 
-### Unit 3: Enhanced Features 📋 PLANNED
-- ISBN lookup
-- Import from JSON/CSV
-- Progress tracking
-- Notes and ratings
+### Unit 3: Enhanced Features ✅ COMPLETE
+- ISBN validation (ISBN-10 and ISBN-13 with checksum verification)
+- JSON import functionality (bulk book import)
+- Progress tracking (current page, percentage, visual progress bars)
+- Notes and ratings (personal notes + 5-star rating system)
+- Completion date tracking (automatic when status changes to Completed)
+- 3 new utilities: isbnValidator, importParser, progressCalculator
+- Enhanced BookFormModal with all new fields
+- Enhanced BookItemComponent with progress display
 
-### Unit 4: Analytics & Utilities 📋 PLANNED
-- Statistics dashboard
-- Search functionality
-- Data export
+### Unit 4: Analytics & Utilities ✅ COMPLETE
+- Statistics dashboard (books by status, monthly trends, reading pace)
+- Search functionality (by title/author with visual highlighting)
+- Data export (JSON export with preview modal)
+- 2 new components: StatisticsComponent, SearchComponent
+- 1 new utility: statisticsCalculator
+- Integrated statistics, search, and export into BookListComponent
 
 ## Component Usage Examples
 
@@ -272,10 +363,15 @@ All data is stored locally in the browser's localStorage:
   "userId": "550e8400-e29b-41d4-a716-446655440000",
   "title": "The Great Gatsby",
   "author": "F. Scott Fitzgerald",
-  "status": "reading",
+  "status": "Reading",
   "totalPages": 180,
-  "pagesRead": 0,
-  "createdAt": "2024-01-20T14:22:00Z"
+  "currentPage": 45,
+  "progress": 25,
+  "isbn": "978-0-7432-7356-5",
+  "notes": "Beautiful prose, exploring themes of wealth and the American Dream",
+  "rating": 5,
+  "createdAt": "2024-01-20T14:22:00Z",
+  "completedAt": null
 }
 ```
 

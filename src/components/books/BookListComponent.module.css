@@ -123,3 +123,48 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Export Modal Styles */
+.exportModal {
+  padding: var(--spacing-md);
+}
+
+.exportModal h2 {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-text-primary);
+}
+
+.exportModal h3 {
+  margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+}
+
+.exportCount {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+}
+
+.exportList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-lg) 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.exportList li {
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.exportList li:last-child {
+  border-bottom: none;
+}
+
+.exportButtons {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}

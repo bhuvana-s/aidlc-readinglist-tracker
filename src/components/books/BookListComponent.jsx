@@ -6,6 +6,9 @@ import { generateId } from '../../utils/idGenerator';
 import { getCurrentDate } from '../../utils/dateUtils';
 import BookItemComponent from './BookItemComponent';
 import BookFormModal from './BookFormModal';
+import StatisticsComponent from './StatisticsComponent';
+import SearchComponent from './SearchComponent';
+import Modal from '../common/Modal';
 import Button from '../common/Button';
 import styles from './BookListComponent.module.css';
 
@@ -14,6 +17,9 @@ function BookListComponent() {
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportPreview, setExportPreview] = useState(null);
   const { currentUserId, logout } = useAuth();
   const navigate = useNavigate();
   
@@ -90,6 +96,62 @@ function BookListComponent() {
     navigate('/login');
   };
   
+  const handleExport = () => {
+    try {
+      const key = `books_${currentUserId}`;
+      const userBooks = getFromStorage(key) || [];
+      
+      if (userBooks.length === 0) {
+        alert('No books to export');
+        return;
+      }
+      
+      setExportPreview({
+        books: userBooks.slice(0, 5),
+        totalCount: userBooks.length
+      });
+      setShowExportModal(true);
+    } catch (err) {
+      alert('Export failed. Please try again.');
+    }
+  };
+  
+  const confirmExport = () => {
+    try {
+      const key = `books_${currentUserId}`;
+      const userBooks = getFromStorage(key) || [];
+      const jsonString = JSON.stringify(userBooks, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      // Generate filename
+      const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '');
+      const sanitizedEmail = currentUserId.replace(/@/g, '-').replace(/\./g, '-');
+      const filename = `reading-list-${sanitizedEmail}-${timestamp}.json`;
+      
+      // Trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      
+      URL.revokeObjectURL(url);
+      setShowExportModal(false);
+      alert(`Export complete: ${userBooks.length} books exported`);
+    } catch (err) {
+      alert('Export failed. Please copy the data manually.');
+    }
+  };
+  
+  const handleSearchResults = (matchingIds) => {
+    setSearchResults(matchingIds);
+  };
+  
+  // Filter books based on search results
+  const displayedBooks = searchResults 
+    ? books.filter(book => searchResults.includes(book.bookId))
+    : books;
+  
   if (loading) {
     return (
       <div className={styles.loading}>
@@ -110,10 +172,16 @@ function BookListComponent() {
       </header>
       
       <div className={styles.content}>
+        {/* Statistics Section */}
+        <StatisticsComponent onExport={handleExport} />
+        
+        {/* Search Section */}
+        <SearchComponent onSearchResults={handleSearchResults} />
+        
         <div className={styles.toolbar}>
           <div className={styles.stats}>
             <span className={styles.count}>
-              {books.length} {books.length === 1 ? 'book' : 'books'}
+              {searchResults ? `${displayedBooks.length} of ${books.length}` : books.length} {books.length === 1 ? 'book' : 'books'}
             </span>
           </div>
           <Button variant="primary" onClick={() => setShowAddModal(true)}>
@@ -132,12 +200,20 @@ function BookListComponent() {
               Add Your First Book
             </Button>
           </div>
+        ) : displayedBooks.length === 0 ? (
+          <div className={styles.emptyState}>
+            <h2 className={styles.emptyTitle}>No books found</h2>
+            <p className={styles.emptyText}>
+              No books match your search. Try a different search term.
+            </p>
+          </div>
         ) : (
           <div className={styles.bookGrid}>
-            {books.map(book => (
+            {displayedBooks.map(book => (
               <BookItemComponent
                 key={book.bookId}
                 book={book}
+                isSearchMatch={searchResults ? searchResults.includes(book.bookId) : null}
                 onEdit={() => setEditingBook(book)}
                 onDelete={() => handleDeleteBook(book.bookId)}
               />
@@ -161,6 +237,31 @@ function BookListComponent() {
           onSave={(data) => handleEditBook(editingBook.bookId, data)}
           onCancel={() => setEditingBook(null)}
         />
+      )}
+      
+      {showExportModal && exportPreview && (
+        <Modal onClose={() => setShowExportModal(false)}>
+          <div className={styles.exportModal}>
+            <h2>Export Preview</h2>
+            <p className={styles.exportCount}>Total books: {exportPreview.totalCount}</p>
+            <h3>First 5 books:</h3>
+            <ul className={styles.exportList}>
+              {exportPreview.books.map(book => (
+                <li key={book.bookId}>
+                  <strong>{book.title}</strong> by {book.author} ({book.status})
+                </li>
+              ))}
+            </ul>
+            <div className={styles.exportButtons}>
+              <Button variant="primary" onClick={confirmExport}>
+                Confirm Export
+              </Button>
+              <Button variant="secondary" onClick={() => setShowExportModal(false)}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </Modal>
       )}
     </div>
   );
