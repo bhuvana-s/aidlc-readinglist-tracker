@@ -1,0 +1,70 @@
+.notification {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.icon {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-full);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.message {
+  flex: 1;
+  font-size: var(--font-size-base);
+}
+
+.dismissButton {
+  background: none;
+  border: none;
+  font-size: var(--font-size-2xl);
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-sm);
+  transition: background-color var(--duration-fast) var(--easing-ease-in-out);
+}
+
+.dismissButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dismissButton:focus-visible {
+  outline: var(--border-width-medium) solid currentColor;
+  outline-offset: 2px;
+}
+
+.notificationSuccess {
+  background-color: var(--color-success);
+  color: var(--color-white);
+}
+
+.notificationError {
+  background-color: var(--color-error);
+  color: var(--color-white);
+}
+
+.notificationWarning {
+  background-color: var(--color-warning);
+  color: var(--color-white);
+}
+
+.notificationInfo {
+  background-color: var(--color-info);
+  color: var(--color-white);
+}

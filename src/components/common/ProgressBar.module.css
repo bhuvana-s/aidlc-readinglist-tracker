@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.bar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--color-gray-300);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: var(--border-radius-full);
+  transition: width var(--duration-normal) var(--easing-ease-in-out);
+}
+
+.percentage {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-700);
+  min-width: 40px;
+  text-align: right;
+}
